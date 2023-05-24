@@ -155,9 +155,19 @@ section {
 	}
 }
 
+.container {
+  height: 31.25em;
+  width: 31.25em;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  color: #ffffff;
+}
 
 .moon {
-  background-color: #f5f5f5;
+  z-index: 10;
+  background-color: white;
   height: 8em;
   width: 8em;
   border-radius: 50%;
@@ -191,7 +201,7 @@ section {
       </div>
       <div id="clouds">
         <img src="./assets/cloud-4821.png" alt="" class="item item1 component"/>
-        <img src="./assets/cloud-8121.png" alt="" class="item item2 component"/>
+          <img src="./assets/cloud-8121.png" alt="" class="item item2 component"/>
         <img src="./assets/cloud-8126.png" alt="" class="item item3 component"/>
       </div>
     </section>
@@ -199,13 +209,6 @@ section {
 
 <script defer>
 document.addEventListener('DOMContentLoaded', function() {
-  var components = document.querySelectorAll('section');
-
-  components.forEach(function(component, index) {
-    setTimeout(function() {
-      component.classList.add('show');
-    }, index * 500);
-  });
 
 function updateTime() {
   var now = new Date();
@@ -213,14 +216,23 @@ function updateTime() {
   var minutes = now.getMinutes();
   var seconds = now.getSeconds();
 
+  hours = addLeadingZero(hours);
+  minutes = addLeadingZero(minutes);
+  seconds = addLeadingZero(seconds);
+
+  var clockElement = document.getElementById("clock");
+  clockElement.textContent = hours + ":" + minutes + ":" + seconds;
   var isDay = hours >= 6 && hours < 18;
 
   if(isDay){
     document.getElementById("moon").remove()
+    clockElement.style.color = "black"
   }
 
   if(!isDay){
     document.getElementById("sun").remove()
+    document.getElementById("clouds").remove()
+    clockElement.style.color = "white"
     setTimeout(() => {
       const bodyElement = document.body;
       bodyElement.style.backgroundColor = "#21233c";
@@ -228,12 +240,7 @@ function updateTime() {
 
   }
 
-  hours = addLeadingZero(hours);
-  minutes = addLeadingZero(minutes);
-  seconds = addLeadingZero(seconds);
 
-  var clockElement = document.getElementById("clock");
-  clockElement.textContent = hours + ":" + minutes + ":" + seconds;
 }
 
 function addLeadingZero(time) {
