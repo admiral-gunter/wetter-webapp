@@ -30,7 +30,8 @@
     margin: 0;
 }
 body{
-    background: #87CEEB;
+    background-color: #87CEEB;
+    transition: background-color 1s ease;
 }
 section {
     position: relative;
@@ -158,6 +159,7 @@ section {
     
       
     <section>
+      <div class="moon"></div>
       <div class="sun"></div>
       <div class="text-clock">
         <p id="clock" style="font-size: 100px; font-weight:bold"></p>
@@ -178,17 +180,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }, index * 500);
   });
 
-  function updateTime() {
+function updateTime() {
   var now = new Date();
   var hours = now.getHours();
   var minutes = now.getMinutes();
   var seconds = now.getSeconds();
 
+  var isDay = hours >= 6 && hours < 18;
+
+  if(isDay){
+
+  }
+
+  if(!isDay){
+    setTimeout(() => {
+      const bodyElement = document.body;
+      bodyElement.style.backgroundColor = "#21233c";
+    }, 500);
+
+  }
+
   hours = addLeadingZero(hours);
   minutes = addLeadingZero(minutes);
   seconds = addLeadingZero(seconds);
 
-  // Display the formatted time
   var clockElement = document.getElementById("clock");
   clockElement.textContent = hours + ":" + minutes + ":" + seconds;
 }
@@ -197,8 +212,8 @@ function addLeadingZero(time) {
   return time < 10 ? "0" + time : time;
 }
 
-// Update the clock every second
 setInterval(updateTime, 1000);
+
 
 });
 
