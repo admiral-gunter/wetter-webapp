@@ -189,6 +189,11 @@ section {
   left: 1.25em;
   box-shadow: 0.9em -2.1em 0 0.2em #e6e6e6, 1.5em -0.3em 0 -0.06em #e6e6e6;
 }
+
+.hidden {
+  display: none;
+}
+
 </style>
 <body>
     
@@ -198,6 +203,11 @@ section {
       <div id="sun" class="sun"></div>
       <div class="text-clock">
         <p id="clock" style="font-size: 100px; font-weight:bold"></p>
+        <div id="info">
+          <p>Lokasi</p>
+          <p>Region</p>
+          <p>Country</p>
+        </div>
       </div>
       <div id="clouds">
         <img src="./assets/cloud-4821.png" alt="" class="item item1 component"/>
@@ -223,24 +233,32 @@ function updateTime() {
   var clockElement = document.getElementById("clock");
   clockElement.textContent = hours + ":" + minutes + ":" + seconds;
   var isDay = hours >= 6 && hours < 18;
+  const moon = document.getElementById("moon")
+  const sun = document.getElementById("sun")
+  const clouds = document.getElementById("clouds")
 
   if(isDay){
-    document.getElementById("moon").remove()
+    moon.classList.add('hidden')
+
+    sun.classList.remove('hidden')
+    clouds.classList.remove('hidden')
+
     clockElement.style.color = "black"
+    document.body.style.backgroundColor = "#87CEEB"
   }
 
   if(!isDay){
-    document.getElementById("sun").remove()
-    document.getElementById("clouds").remove()
+    sun.classList.add('hidden')
+    clouds.classList.add('hidden')
+
+    moon.classList.remove('hidden')
+
     clockElement.style.color = "white"
     setTimeout(() => {
       const bodyElement = document.body;
       bodyElement.style.backgroundColor = "#21233c";
     }, 500);
-
   }
-
-
 }
 
 function addLeadingZero(time) {
@@ -249,7 +267,100 @@ function addLeadingZero(time) {
 
 setInterval(updateTime, 1000);
 
+const current = {
+  "last_updated_epoch": 1685277900,
+  "last_updated": "2023-05-28 19:45",
+  "temp_c": 29,
+  "temp_f": 84.2,
+  "is_day": 0,
+  "condition": {
+      "text": "Partly cloudy",
+      "icon": "//cdn.weatherapi.com/weather/64x64/night/116.png",
+      "code": 1003
+  },
+  "wind_mph": 3.8,
+  "wind_kph": 6.1,
+  "wind_degree": 350,
+  "wind_dir": "N",
+  "pressure_mb": 1009,
+  "pressure_in": 29.8,
+  "precip_mm": 0.1,
+  "precip_in": 0,
+  "humidity": 75,
+  "cloud": 25,
+  "feelslike_c": 32.3,
+  "feelslike_f": 90.1,
+  "vis_km": 6,
+  "vis_miles": 3,
+  "uv": 1,
+  "gust_mph": 7.2,
+  "gust_kph": 11.5,
+  "air_quality": {
+      "co": 6408.7001953125,
+      "no2": 146.6999969482422,
+      "o3": 2.700000047683716,
+      "so2": 69.5999984741211,
+      "pm2_5": 166.5,
+      "pm10": 196.89999389648438,
+      "us-epa-index": 5,
+      "gb-defra-index": 10
+  }
+}
 
+const location = {
+  "name": "Jakarta",
+  "region": "Jakarta Raya",
+  "country": "Indonesia",
+  "lat": -6.21,
+  "lon": 106.85,
+  "tz_id": "Asia/Jakarta",
+  "localtime_epoch": 1685278021,
+  "localtime": "2023-05-28 19:47"
+}
+
+const getWetter = ()=>{
+  const params = {
+    key:'d020987a1844455698a82033232305',
+    q:'Jakarta',
+    aqi:'yes'
+  }
+
+  const queryString = new URLSearchParams(params).toString();
+  
+  const url = `https://api.weatherapi.com/v1/current.json?${queryString}`;
+
+  fetch(url)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    Object.assign(current, data.current)
+    Object.assign(location, data.location)
+    
+    const divElement = document.getElementById('info');
+    const paragraphElements = divElement.getElementsByTagName('p');
+
+    if (paragraphElements.length > 0) {
+      const targetParagraph = paragraphElements[1]; // Accessing the second <p> element (index 1)
+      const targetChildren = targetParagraph.children;
+      
+      // Log the children of the target paragraph
+      for (let i = 0; i < targetChildren.length; i++) {
+        console.log(targetChildren[i]);
+      }
+    }
+
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
+}
+
+setTimeout(getWetter, 5000);
 });
 
 </script>
