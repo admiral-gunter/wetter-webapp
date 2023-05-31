@@ -202,11 +202,17 @@ section {
       <div id="moon" class="component moon"></div>
       <div id="sun" class="sun"></div>
       <div class="text-clock">
+        <div >
+          <img src="" alt="" id="icon" style="width: 64px; height: 64px;">
+          <p><span id="temp_c">OKE</span> °C</p>
+          <div style="width: 10px;"></div>
+          <p><span id="temp_f">OKE</span> °F</p>
+        </div>
         <p id="clock" style="font-size: 100px; font-weight:bold"></p>
         <div id="info">
-          <p>Lokasi</p>
-          <p>Region</p>
-          <p>Country</p>
+          <p id="lokasi">Lokasi</p>
+          <p id="region">Region</p>
+          <p id="country">Country</p>
         </div>
       </div>
       <div id="clouds">
@@ -339,20 +345,19 @@ const getWetter = ()=>{
   .then(data => {
     Object.assign(current, data.current)
     Object.assign(location, data.location)
+
+    document.getElementById('lokasi').textContent = location.tz_id
+    document.getElementById('region').textContent = location.region
+    document.getElementById('country').textContent = location.country
+
+    document.getElementById('temp_c').textContent = current.temp_c
+    document.getElementById('temp_f').textContent = current.temp_f
+
+
+    const imgIcon = document.getElementById('icon');
+    imgIcon.setAttribute("src", "https:"+current.condition.icon);
     
-    const divElement = document.getElementById('info');
-    const paragraphElements = divElement.getElementsByTagName('p');
-
-    if (paragraphElements.length > 0) {
-      const targetParagraph = paragraphElements[1]; // Accessing the second <p> element (index 1)
-      const targetChildren = targetParagraph.children;
-      
-      // Log the children of the target paragraph
-      for (let i = 0; i < targetChildren.length; i++) {
-        console.log(targetChildren[i]);
-      }
-    }
-
+    console.log(location)
   })
   .catch(error => {
     console.error('Error:', error);
@@ -360,7 +365,7 @@ const getWetter = ()=>{
 
 }
 
-setTimeout(getWetter, 5000);
+setTimeout(getWetter, 100);
 });
 
 </script>
