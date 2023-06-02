@@ -6,3 +6,5 @@ TODO:
   <li>API to the weather ✅</li>
   <li>Responsive on mobile devices [on progress]</li>
 </ol>
+
+[Click to Preview the Page](https://admiral-gunter.github.io/wetter-webapp/)
