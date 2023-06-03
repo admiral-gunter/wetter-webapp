@@ -204,6 +204,7 @@ section {
       <div class="text-clock">
         <div >
           <img src="" alt="" id="icon" style="width: 64px; height: 64px;">
+          <p style="font-weight: bold;" id="condition_text">OK</p>
           <p><span id="temp_c">OKE</span> °C</p>
           <div style="width: 10px;"></div>
           <p><span id="temp_f">OKE</span> °F</p>
@@ -352,6 +353,7 @@ const getWetter = ()=>{
 
     document.getElementById('temp_c').textContent = current.temp_c
     document.getElementById('temp_f').textContent = current.temp_f
+    document.getElementById('condition_text').textContent = current.condition.text
 
 
     const imgIcon = document.getElementById('icon');
