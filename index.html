@@ -201,7 +201,7 @@ section {
     <section>
       <div id="moon" class="component moon"></div>
       <div id="sun" class="sun"></div>
-      <div class="text-clock">
+      <div class="text-clock" id="text-clock">
         <div >
           <img src="" alt="" id="icon" style="width: 64px; height: 64px;">
           <p style="font-weight: bold;" id="condition_text">OK</p>
@@ -244,6 +244,8 @@ function updateTime() {
   const sun = document.getElementById("sun")
   const clouds = document.getElementById("clouds")
 
+  const textClock =  document.getElementById("text-clock")
+
   if(isDay){
     moon.classList.add('hidden')
 
@@ -252,6 +254,8 @@ function updateTime() {
 
     clockElement.style.color = "black"
     document.body.style.backgroundColor = "#87CEEB"
+
+    textClock.style.color = "black"
   }
 
   if(!isDay){
@@ -261,6 +265,7 @@ function updateTime() {
     moon.classList.remove('hidden')
 
     clockElement.style.color = "white"
+    textClock.style.color = "white"
     setTimeout(() => {
       const bodyElement = document.body;
       bodyElement.style.backgroundColor = "#21233c";
