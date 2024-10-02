@@ -268,6 +268,170 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
   }
+
+
+
+
+
+  .rain {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
+  .rain.back-row {
+    display: none;
+    z-index: 1;
+    bottom: 60px;
+    opacity: 0.5;
+  }
+
+  .drop {
+    position: absolute;
+    bottom: 100%;
+    width: 15px;
+    height: 120px;
+    pointer-events: none;
+    animation: drop 0.5s linear infinite;
+  }
+
+  @keyframes drop {
+    0% {
+      transform: translateY(0vh);
+    }
+
+    75% {
+      transform: translateY(90vh);
+    }
+
+    100% {
+      transform: translateY(90vh);
+    }
+  }
+
+  .stem {
+    width: 1px;
+    height: 60%;
+    margin-left: 7px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.25));
+    animation: stem 0.5s linear infinite;
+  }
+
+  @keyframes stem {
+    0% {
+      opacity: 1;
+    }
+
+    65% {
+      opacity: 1;
+    }
+
+    75% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .splat {
+    width: 15px;
+    height: 10px;
+    border-top: 2px dotted rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    opacity: 1;
+    transform: scale(0);
+    animation: splat 0.5s linear infinite;
+    display: none;
+  }
+
+  body.splat-toggle .splat {
+    display: block;
+  }
+
+  @keyframes splat {
+    0% {
+      opacity: 1;
+      transform: scale(0);
+    }
+
+    80% {
+      opacity: 1;
+      transform: scale(0);
+    }
+
+    90% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(1.5);
+    }
+  }
+
+  .toggles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+  }
+
+  .toggle {
+    position: absolute;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    line-height: 51px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .toggle:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .toggle:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .toggle.active {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .splat-toggle {
+    top: 20px;
+  }
+
+  .back-row-toggle {
+    top: 90px;
+    line-height: 12px;
+    padding-top: 14px;
+  }
+
+  .single-toggle {
+    top: 160px;
+  }
+
+  body.single-toggle .drop {
+    display: none;
+  }
+
+  body.single-toggle .drop:nth-child(10) {
+    display: block;
+  }
 </style>
 
 <body>
@@ -292,9 +456,9 @@
       </div>
     </div>
     <div id="clouds">
-      <img src="./assets/cloud-4821.png" alt="" class="item item1 component" />
-      <img src="./assets/cloud-8121.png" alt="" class="item item2 component" />
-      <img src="./assets/cloud-8126.png" alt="" class="item item3 component" />
+      <img src="./assets/cloud-4821.png" alt="" class="item item1 component" id="cloud" />
+      <img src="./assets/cloud-8121.png" alt="" class="item item2 component" id="cloud" />
+      <img src="./assets/cloud-8126.png" alt="" class="item item3 component" id="cloud" />
     </div>
   </section>
 
@@ -310,10 +474,23 @@
 
 
 
+  <div class="rain front-row"></div>
+  <div class="rain back-row"></div>
+  <div class="toggles">
+    <!-- <div class="splat-toggle toggle active">SPLAT</div>
+    <div class="back-row-toggle toggle active">BACK<br>ROW</div>
+    <div class="single-toggle toggle">SINGLE</div> -->
+  </div>
+
+
+
 
 </body>
-
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+  integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
 <script defer>
+  var currenstState = 'NOT_RAINING'
+
   document.addEventListener('DOMContentLoaded', function () {
 
     function updateTime() {
@@ -360,6 +537,10 @@
           bodyElement.style.backgroundColor = "#21233c";
         }, 500);
       }
+
+      if (currenstState == 'RAINING') {
+        document.body.style.backgroundColor = "gray"
+      }
     }
 
     function addLeadingZero(time) {
@@ -369,43 +550,43 @@
     setInterval(updateTime, 1000);
 
     const current = {
-      "last_updated_epoch": 1685277900,
-      "last_updated": "2023-05-28 19:45",
-      "temp_c": 29,
-      "temp_f": 84.2,
-      "is_day": 0,
-      "condition": {
-        "text": "Partly cloudy",
-        "icon": "//cdn.weatherapi.com/weather/64x64/night/116.png",
-        "code": 1003
-      },
-      "wind_mph": 3.8,
-      "wind_kph": 6.1,
-      "wind_degree": 350,
-      "wind_dir": "N",
-      "pressure_mb": 1009,
-      "pressure_in": 29.8,
-      "precip_mm": 0.1,
-      "precip_in": 0,
-      "humidity": 75,
-      "cloud": 25,
-      "feelslike_c": 32.3,
-      "feelslike_f": 90.1,
-      "vis_km": 6,
-      "vis_miles": 3,
-      "uv": 1,
-      "gust_mph": 7.2,
-      "gust_kph": 11.5,
-      "air_quality": {
-        "co": 6408.7001953125,
-        "no2": 146.6999969482422,
-        "o3": 2.700000047683716,
-        "so2": 69.5999984741211,
-        "pm2_5": 166.5,
-        "pm10": 196.89999389648438,
-        "us-epa-index": 5,
-        "gb-defra-index": 10
-      }
+      // "last_updated_epoch": 1685277900,
+      // "last_updated": "2023-05-28 19:45",
+      // "temp_c": 29,
+      // "temp_f": 84.2,
+      // "is_day": 0,
+      // "condition": {
+      //   "text": "Partly cloudy",
+      //   "icon": "//cdn.weatherapi.com/weather/64x64/night/116.png",
+      //   "code": 1003
+      // },
+      // "wind_mph": 3.8,
+      // "wind_kph": 6.1,
+      // "wind_degree": 350,
+      // "wind_dir": "N",
+      // "pressure_mb": 1009,
+      // "pressure_in": 29.8,
+      // "precip_mm": 0.1,
+      // "precip_in": 0,
+      // "humidity": 75,
+      // "cloud": 25,
+      // "feelslike_c": 32.3,
+      // "feelslike_f": 90.1,
+      // "vis_km": 6,
+      // "vis_miles": 3,
+      // "uv": 1,
+      // "gust_mph": 7.2,
+      // "gust_kph": 11.5,
+      // "air_quality": {
+      //   "co": 6408.7001953125,
+      //   "no2": 146.6999969482422,
+      //   "o3": 2.700000047683716,
+      //   "so2": 69.5999984741211,
+      //   "pm2_5": 166.5,
+      //   "pm10": 196.89999389648438,
+      //   "us-epa-index": 5,
+      //   "gb-defra-index": 10
+      // }
     }
 
     var location = {
@@ -450,6 +631,20 @@
           document.getElementById('condition_text').textContent = current.condition.text
 
 
+          if (String(current.condition.text).includes('ain')) {
+            makeItRain();
+            currenstState = 'RAINING'
+            // document.body.style.backgroundColor = 'gray'
+          }
+
+          if (!String(current.condition.text).includes('cloud')) {
+            $('#clouds').css('display', 'none')
+          }
+
+          if (String(current.condition.text).includes('cloud')) {
+            $('#clouds').css('display', 'block')
+          }
+
           const imgIcon = document.getElementById('icon');
           imgIcon.setAttribute("src", "https:" + current.condition.icon);
 
@@ -464,13 +659,16 @@
     setTimeout(getWetter, 100);
   });
 
-  document.getElementById('getLocationBtn').onclick = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
+  if (document.getElementById('getLocationBtn')) {
+
+    document.getElementById('getLocationBtn').onclick = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    };
+  }
 
   function showPosition(position) {
     const lat = position.coords.latitude;
@@ -520,6 +718,53 @@
         break;
     }
   }
+
+
+
+
+  var makeItRain = function () {
+    //clear out everything
+    $('.rain').empty();
+
+    var increment = 0;
+    var drops = "";
+    var backDrops = "";
+
+    while (increment < 100) {
+      //couple random numbers to use for various randomizations
+      //random number between 98 and 1
+      var randoHundo = (Math.floor(Math.random() * (98 - 1 + 1) + 1));
+      //random number between 5 and 2
+      var randoFiver = (Math.floor(Math.random() * (5 - 2 + 1) + 2));
+      //increment
+      increment += randoFiver;
+      //add in a new raindrop with various randomizations to certain CSS properties
+      drops += '<div class="drop" style="left: ' + increment + '%; bottom: ' + (randoFiver + randoFiver - 1 + 100) + '%; animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"><div class="stem" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div><div class="splat" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div></div>';
+      backDrops += '<div class="drop" style="right: ' + increment + '%; bottom: ' + (randoFiver + randoFiver - 1 + 100) + '%; animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"><div class="stem" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div><div class="splat" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div></div>';
+    }
+
+    $('.rain.front-row').append(drops);
+    $('.rain.back-row').append(backDrops);
+  }
+
+  // $('.splat-toggle.toggle').on('click', function () {
+  //   $('body').toggleClass('splat-toggle');
+  //   $('.splat-toggle.toggle').toggleClass('active');
+  //   makeItRain();
+  // });
+
+  // $('.back-row-toggle.toggle').on('click', function () {
+  //   $('body').toggleClass('back-row-toggle');
+  //   $('.back-row-toggle.toggle').toggleClass('active');
+  //   makeItRain();
+  // });
+
+  // $('.single-toggle.toggle').on('click', function () {
+  //   $('body').toggleClass('single-toggle');
+  //   $('.single-toggle.toggle').toggleClass('active');
+  //   makeItRain();
+  // });
+
 </script>
 
 </html>
