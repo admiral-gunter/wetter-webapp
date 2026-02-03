@@ -7,4 +7,4 @@ TODO:
   <li>Responsive on mobile devices [on progress]</li>
 </ol>
 
-[Click to Preview the Page](https://admiral-gunter.github.io/wetter-webapp/)
+[Click to Preview the Page](https://arfli.github.io/wetter-webapp/)
